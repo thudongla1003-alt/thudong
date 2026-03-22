@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐔 Công Thức Tính Chỉ Số Chăn Nuôi Gia Cầm</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Nunito', sans-serif;
+            overflow-x: hidden;
+            background: linear-gradient(180deg, #87CEEB 0%, #98FB98 40%, #90EE90 60%, #7CCD7C 100%);
+            min-height: 100vh;
+        }
+        h1, h2, h3, h4 { font-family: 'Baloo 2', cursive; }
+
+        /* Sky & clouds */
+        .sky {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(180deg, #4FC3F7 0%, #81D4FA 25%, #B3E5FC 45%, #C8E6C9 65%, #A5D6A7 80%, #81C784 100%);
+            z-index: -2;
+        }
+        .cloud {
+            position: fixed; border-radius: 50%; background: rgba(255,255,255,0.85);
+            animation: floatCloud linear infinite;
+        }
+        @keyframes floatCloud {
+            from { transform: translateX(110vw); }
+            to { transform: translateX(-30vw); }
+        }
+
+        /* Sun */
+        .sun {
+            position: fixed; top: 30px; right: 80px; width: 90px; height: 90px;
+            background: radial-gradient(circle, #FFF176 30%, #FFEE58 50%, #FFD54F 70%, transparent 72%);
+            border-radius: 50%; z-index: -1;
+            animation: pulseSun 3s ease-in-out infinite;
+        }
+        .sun::after {
+            content: ''; position: absolute; top: -15px; left: -15px; right: -15px; bottom: -15px;
+            background: radial-gradient(circle, rgba(255,235,59,0.3) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        @keyframes pulseSun { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+
+        /* Grass */
+        .grass-bottom {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 120px;
+            background: linear-gradient(0deg, #4CAF50 0%, #66BB6A 40%, #81C784 70%, transparent 100%);
+            z-index: 0;
+        }
+        .grass-bottom::before {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 60px;
+            background: repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(56,142,60,0.3) 20px, rgba(56,142,60,0.3) 22px);
+        }
+
+        /* Fence */
+        .fence {
+            position: fixed; bottom: 80px; left: 0; width: 100%; height: 60px; z-index: 1;
+        }
+        .fence-post {
+            position: absolute; bottom: 0; width: 12px; height: 55px;
+            background: linear-gradient(90deg, #8D6E63, #A1887F, #8D6E63);
+            border-radius: 3px 3px 0 0;
+        }
+        .fence-post::before {
+            content: ''; position: absolute; top: -8px; left: -2px; width: 16px; height: 10px;
+            background: linear-gradient(180deg, #A1887F, #8D6E63);
+            border-radius: 3px 3px 0 0;
+        }
+        .fence-rail {
+            position: absolute; left: 0; width: 100%; height: 8px;
+            background: linear-gradient(180deg, #A1887F, #795548);
+            border-radius: 2px;
+        }
+
+        /* Chickens */
+        .chicken-container {
+            position: fixed; z-index: 2; pointer-events: none;
+        }
+        .chicken {
+            position: relative; cursor: pointer; pointer-events: auto;
+            transition: transform 0.1s;
+        }
+        .chicken:hover { transform: scale(1.2); }
+        .chicken-body {
+            width: 40px; height: 32px; border-radius: 50%;
+            position: relative;
+        }
+        .chicken-head {
+            width: 20px; height: 18px; border-radius: 50%;
+            position: absolute; top: -10px;
+        }
+        .chicken-eye {
+            width: 4px; height: 4px; background: #1a1a1a; border-radius: 50%;
+            position: absolute; top: 4px;
+        }
+        .chicken-beak {
+            width: 0; height: 0;
+            border-top: 4px solid transparent;
+            border-bottom: 4px solid transparent;
+            position: absolute; top: 7px;
+        }
+        .chicken-comb {
+            position: absolute; top: -6px;
+            width: 12px; height: 10px; background: #E53935;
+            border-radius: 50% 50% 20% 20%;
+        }
+        .chicken-wattle {
+            width: 6px; height: 8px; background: #E53935;
+            border-radius: 0 0 50% 50%;
+            position: absolute; top: 12px;
+        }
+        .chicken-tail {
+            position: absolute; top: -8px;
+            width: 15px; height: 20px;
+        }
+        .chicken-leg {
+            position: absolute; bottom: -12px; width: 3px; height: 14px;
+            background: #FF8F00;
+        }
+        .chicken-foot {
+            position: absolute; bottom: -3px; width: 10px; height: 3px;
+            background: #FF8F00; border-radius: 1px;
+        }
+        .chicken-wing {
+            position: absolute; top: 5px; width: 18px; height: 14px;
+            border-radius: 50%; opacity: 0.7;
+        }
+
+        @keyframes walkRight {
+            0% { transform: translateX(-80px); }
+            100% { transform: translateX(calc(100vw + 80px)); }
+        }
+        @keyframes walkLeft {
+            0% { transform: translateX(calc(100vw + 80px)) scaleX(-1); }
+            100% { transform: translateX(-80px) scaleX(-1); }
+        }
+        @keyframes bobWalk {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-3px) rotate(2deg); }
+            75% { transform: translateY(-3px) rotate(-2deg); }
+        }
+        @keyframes peck {
+            0%, 80%, 100% { transform: rotate(0deg); }
+            85%, 95% { transform: rotate(25deg); }
+            90% { transform: rotate(35deg); }
+        }
+        @keyframes wingFlap {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(-15deg); }
+        }
+        @keyframes legWalk {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(20deg); }
+            75% { transform: rotate(-20deg); }
+        }
+
+        .chicken.walking .chicken-body { animation: bobWalk 0.4s ease-in-out infinite; }
+        .chicken.pecking .chicken-head { animation: peck 2s ease-in-out infinite; }
+        .chicken.walking .chicken-wing { animation: wingFlap 0.4s ease-in-out infinite; }
+        .chicken.walking .chicken-leg { animation: legWalk 0.3s ease-in-out infinite; }
+        .chicken.walking .chicken-leg:nth-child(2) { animation-delay: 0.15s; }
+
+        /* Chick */
+        .chick {
+            position: relative; cursor: pointer; pointer-events: auto;
+        }
+        .chick-body {
+            width: 20px; height: 18px; background: #FFD54F;
+            border-radius: 50%; position: relative;
+            box-shadow: inset -2px -2px 4px rgba(255,160,0,0.3);
+        }
+        .chick-head {
+            width: 14px; height: 12px; background: #FFD54F;
+            border-radius: 50%; position: absolute; top: -7px; left: 8px;
+            box-shadow: inset -1px -1px 3px rgba(255,160,0,0.3);
+        }
+        .chick-eye {
+            width: 3px; height: 3px; background: #1a1a1a;
+            border-radius: 50%; position: absolute; top: 3px; right: 2px;
+        }
+        .chick-beak {
+            width: 0; height: 0;
+            border-top: 2px solid transparent;
+            border-bottom: 2px solid transparent;
+            border-left: 5px solid #FF6F00;
+            position: absolute; top: 5px; right: -4px;
+        }
+        .chick-leg {
+            position: absolute; bottom: -6px; width: 2px; height: 7px;
+            background: #FF8F00;
+        }
+
+        /* Speech bubble */
+        .speech-bubble {
+            position: absolute; top: -45px; left: 50%; transform: translateX(-50%);
+            background: white; border-radius: 12px; padding: 4px 10px;
+            font-size: 11px; font-weight: 700; white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            opacity: 0; transition: opacity 0.3s;
+            pointer-events: none; color: #333;
+        }
+        .speech-bubble::after {
+            content: ''; position: absolute; bottom: -6px; left: 50%;
+            transform: translateX(-50%);
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid white;
+        }
+        .chicken:hover .speech-bubble,
+        .chick:hover .speech-bubble { opacity: 1; }
+
+        /* Egg */
+        .egg {
+            position: fixed; z-index: 2; pointer-events: none;
+            animation: eggBounce 0.5s ease-out;
+        }
+        @keyframes eggBounce {
+            0% { transform: translateY(-20px) scale(0); opacity: 0; }
+            60% { transform: translateY(5px) scale(1.1); opacity: 1; }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        /* Main content */
+        .main-content {
+            position: relative; z-index: 10;
+            max-width: 1200px; margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header-card {
+            background: linear-gradient(135deg, #FF6F00 0%, #FF8F00 30%, #FFA000 60%, #FFB300 100%);
+            border-radius: 24px; padding: 30px 40px;
+            color: white; text-align: center;
+            box-shadow: 0 10px 40px rgba(255,111,0,0.3), 0 0 0 4px rgba(255,255,255,0.3);
+            position: relative; overflow: hidden;
+            margin-bottom: 30px;
+        }
+        .header-card::before {
+            content: ''; position: absolute; top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.05) 20px, rgba(255,255,255,0.05) 40px);
+        }
+        .header-card::after {
+            content: '🐔🌾🐣🌿🐓🌽'; position: absolute; bottom: 10px; right: 20px;
+            font-size: 28px; opacity: 0.3;
+        }
+
+        /* Calculator cards */
+        .calc-card {
+            border-radius: 20px; padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            position: relative; overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            backdrop-filter: blur(10px);
+        }
+        .calc-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.15);
+        }
+
+        .calc-fcr {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,243,224,0.95));
+            border: 2px solid #FFB74D;
+        }
+        .calc-adg {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(232,245,233,0.95));
+            border: 2px solid #81C784;
+        }
+        .calc-bpi {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(227,242,253,0.95));
+            border: 2px solid #64B5F6;
+        }
+
+        .card-icon {
+            width: 60px; height: 60px; border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 28px; margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .formula-box {
+            background: rgba(0,0,0,0.04);
+            border: 2px dashed rgba(0,0,0,0.1);
+            border-radius: 12px; padding: 15px 20px;
+            text-align: center; margin: 15px 0;
+            font-family: 'Baloo 2', cursive;
+        }
+        .formula-text {
+            font-size: 1.3rem; font-weight: 700;
+            color: #333; letter-spacing: 0.5px;
+        }
+
+        .input-group { margin-bottom: 12px; }
+        .input-group label {
+            display: block; font-weight: 700; font-size: 0.85rem;
+            color: #555; margin-bottom: 4px;
+        }
+        .input-group input {
+            width: 100%; padding: 10px 14px; border: 2px solid #e0e0e0;
+            border-radius: 10px; font-size: 1rem; font-family: 'Nunito', sans-serif;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            background: white;
+        }
+        .input-group input:focus {
+            outline: none; border-color: #FF8F00;
+            box-shadow: 0 0 0 3px rgba(255,143,0,0.15);
+        }
+
+        .btn-calc {
+            width: 100%; padding: 12px; border: none; border-radius: 12px;
+            font-size: 1rem; font-weight: 700; color: white;
+            cursor: pointer; transition: all 0.3s;
+            font-family: 'Nunito', sans-serif;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-calc:hover { transform: scale(1.02); box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
+        .btn-calc:active { transform: scale(0.98); }
+
+        .btn-fcr { background: linear-gradient(135deg, #FF6F00, #FF8F00); }
+        .btn-adg { background: linear-gradient(135deg, #2E7D32, #43A047); }
+        .btn-bpi { background: linear-gradient(135deg, #1565C0, #1E88E5); }
+
+        .result-box {
+            margin-top: 15px; padding: 15px; border-radius: 12px;
+            text-align: center; font-weight: 700;
+            display: none; animation: resultPop 0.4s ease-out;
+        }
+        @keyframes resultPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .result-fcr { background: linear-gradient(135deg, #FFF3E0, #FFE0B2); color: #E65100; }
+        .result-adg { background: linear-gradient(135deg, #E8F5E9, #C8E6C9); color: #1B5E20; }
+        .result-bpi { background: linear-gradient(135deg, #E3F2FD, #BBDEFB); color: #0D47A1; }
+
+        .result-value {
+            font-size: 2rem; font-family: 'Baloo 2', cursive;
+        }
+        .result-rating {
+            display: inline-block; padding: 4px 14px; border-radius: 20px;
+            font-size: 0.85rem; margin-top: 5px;
+        }
+
+        /* Info Section */
+        .info-card {
+            background: rgba(255,255,255,0.92); border-radius: 20px;
+            padding: 30px; margin-top: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            border: 2px solid rgba(255,183,77,0.3);
+        }
+        .info-table {
+            width: 100%; border-collapse: separate; border-spacing: 0;
+            border-radius: 12px; overflow: hidden;
+        }
+        .info-table thead th {
+            padding: 12px 16px; font-weight: 700;
+            text-align: left; font-size: 0.85rem;
+        }
+        .info-table tbody td {
+            padding: 10px 16px; font-size: 0.9rem;
+            border-top: 1px solid #f0f0f0;
+        }
+        .info-table tbody tr:hover { background: rgba(255,143,0,0.05); }
+
+        .badge {
+            display: inline-block; padding: 3px 10px; border-radius: 12px;
+            font-size: 0.75rem; font-weight: 700;
+        }
+        .badge-excellent { background: #E8F5E9; color: #2E7D32; }
+        .badge-good { background: #FFF3E0; color: #EF6C00; }
+        .badge-average { background: #FFF9C4; color: #F57F17; }
+        .badge-poor { background: #FFEBEE; color: #C62828; }
+
+        /* Floating elements */
+        .float-grain {
+            position: fixed; z-index: 1; pointer-events: none;
+            font-size: 14px; opacity: 0.6;
+            animation: floatGrain 4s ease-in-out infinite;
+        }
+        @keyframes floatGrain {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(10deg); }
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #3E2723, #4E342E, #5D4037);
+            border-radius: 20px 20px 0 0; padding: 30px 40px;
+            color: #BCAAA4; text-align: center;
+            margin-top: 40px; position: relative; overflow: hidden;
+        }
+        .footer::before {
+            content: '🌾🐔🌾🐓🌾🐣🌾';
+            position: absolute; top: 10px; left: 50%;
+            transform: translateX(-50%); font-size: 20px; opacity: 0.2;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-card { padding: 20px; }
+            .header-card h1 { font-size: 1.5rem !important; }
+            .calc-card { padding: 20px; }
+            .main-content { padding: 10px; }
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed; top: 20px; right: 20px; z-index: 1000;
+            background: white; border-radius: 12px; padding: 15px 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            transform: translateX(120%); transition: transform 0.4s ease;
+            font-weight: 600; display: flex; align-items: center; gap: 10px;
+        }
+        .toast.show { transform: translateX(0); }
+
+        /* Scroll animation */
+        .reveal {
+            opacity: 0; transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .reveal.visible {
+            opacity: 1; transform: translateY(0);
+        }
+
+        /* Tab navigation */
+        .tab-nav {
+            display: flex; gap: 8px; justify-content: center;
+            flex-wrap: wrap; margin-bottom: 25px;
+        }
+        .tab-btn {
+            padding: 10px 24px; border-radius: 50px; border: 2px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.3); color: white; font-weight: 700;
+            cursor: pointer; transition: all 0.3s;
+            font-family: 'Nunito', sans-serif; font-size: 0.95rem;
+            backdrop-filter: blur(5px);
+        }
+        .tab-btn:hover, .tab-btn.active {
+            background: rgba(255,255,255,0.9); color: #E65100;
+            border-color: white; transform: scale(1.05);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Counter animation */
+        .counter-up {
+            transition: all 0.5s ease;
+        }
+
+        /* Particle effects on click */
+        .particle {
+            position: fixed; pointer-events: none; z-index: 9999;
+            font-size: 20px;
+            animation: particleFly 1s ease-out forwards;
+        }
+        @keyframes particleFly {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="sky"></div>
+    <div class="sun"></div>
+    <div class="grass-bottom"></div>
+
+    <!-- Clouds -->
+    <div class="cloud" style="width:120px;height:40px;top:60px;animation-duration:25s;animation-delay:-5s;"></div>
+    <div class="cloud" style="width:80px;height:30px;top:45px;left:10px;animation-duration:25s;animation-delay:-5s;"></div>
+    <div class="cloud" style="width:150px;height:50px;top:100px;animation-duration:35s;animation-delay:-15s;"></div>
+    <div class="cloud" style="width:100px;height:35px;top:85px;left:20px;animation-duration:35s;animation-delay:-15s;"></div>
+    <div class="cloud" style="width:100px;height:35px;top:140px;animation-duration:30s;animation-delay:-8s;"></div>
+
+    <!-- Fence -->
+    <div class="fence" id="fence"></div>
+
+    <!-- Chicken containers -->
+    <div id="chickenWorld"></div>
+
+    <!-- Floating grains -->
+    <div id="floatingGrains"></div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <span id="toastIcon">🥚</span>
+        <span id="toastText"></span>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header-card reveal">
+            <div style="position:relative;z-index:1;">
+                <div style="font-size:3rem;margin-bottom:5px;">🐔🌾🐓</div>
+                <h1 style="font-size:2.2rem;text-shadow:2px 2px 4px rgba(0,0,0,0.2);margin-bottom:8px;">
+                    Công Thức Tính Chỉ Số Chăn Nuôi Gia Cầm
+                </h1>
+                <p style="font-size:1.1rem;opacity:0.9;max-width:700px;margin:0 auto;">
+                    🔬 Công cụ tính toán chuyên nghiệp cho người chăn nuôi — FCR, ADG & BPI
+                </p>
+                <div class="tab-nav" style="margin-top:20px;margin-bottom:0;">
+                    <button class="tab-btn active" onclick="switchTab('all')">📊 Tất cả</button>
+                    <button class="tab-btn" onclick="switchTab('fcr')">🍽️ FCR</button>
+                    <button class="tab-btn" onclick="switchTab('adg')">📈 ADG</button>
+                    <button class="tab-btn" onclick="switchTab('bpi')">🏆 BPI</button>
+                    <button class="tab-btn" onclick="switchTab('info')">📚 Tra cứu</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calculators Grid -->
+        <div id="tab-all" class="tab-content active">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- FCR -->
+                <div class="calc-card calc-fcr reveal" id="fcr-card">
+                    <div class="card-icon" style="background:linear-gradient(135deg,#FF6F00,#FFA000);">🍽️</div>
+                    <h3 style="font-size:1.4rem;color:#E65100;margin-bottom:5px;">Hệ số FCR</h3>
+                    <p style="font-size:0.85rem;color:#888;margin-bottom:10px;">Feed Conversion Ratio — Hệ số chuyển đổi thức ăn</p>
+                    <div class="formula-box">
+                        <div class="formula-text">
+                            FCR = <span style="color:#E65100;">Tổng TĂ tiêu thụ</span> / <span style="color:#2E7D32;">Tổng tăng trọng</span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>🌽 Tổng thức ăn tiêu thụ (kg)</label>
+                        <input type="number" id="fcr-feed" placeholder="VD: 5000" step="0.01" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label>⚖️ Tổng tăng trọng (kg)</label>
+                        <input type="number" id="fcr-gain" placeholder="VD: 3000" step="0.01" min="0">
+                    </div>
+                    <button class="btn-calc btn-fcr" onclick="calcFCR()">
+                        <span>🔢</span> Tính FCR
+                    </button>
+                    <div class="result-box result-fcr" id="fcr-result">
+                        <div style="font-size:0.8rem;opacity:0.7;">KẾT QUẢ FCR</div>
+                        <div class="result-value" id="fcr-value">—</div>
+                        <div class="result-rating" id="fcr-rating"></div>
+                        <div style="font-size:0.8rem;margin-top:8px;opacity:0.8;" id="fcr-explain"></div>
+                    </div>
+                </div>
+
+                <!-- ADG -->
+                <div class="calc-card calc-adg reveal" id="adg-card" style="transition-delay:0.15s;">
+                    <div class="card-icon" style="background:linear-gradient(135deg,#2E7D32,#66BB6A);">📈</div>
+                    <h3 style="font-size:1.4rem;color:#2E7D32;margin-bottom:5px;">Chỉ số ADG</h3>
+                    <p style="font-size:0.85rem;color:#888;margin-bottom:10px;">Average Daily Gain — Tăng trọng bình quân ngày</p>
+                    <div class="formula-box">
+                        <div class="formula-text">
+                            ADG = (<span style="color:#E65100;">P<sub>cuối</sub></span> − <span style="color:#1565C0;">P<sub>đầu</sub></span>) / <span style="color:#2E7D32;">Số ngày</span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>🐣 Khối lượng ban đầu (g)</label>
+                        <input type="number" id="adg-start" placeholder="VD: 42" step="0.01" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label>🐔 Khối lượng kết thúc (g)</label>
+                        <input type="number" id="adg-end" placeholder="VD: 2500" step="0.01" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label>📅 Số ngày nuôi</label>
+                        <input type="number" id="adg-days" placeholder="VD: 42" step="1" min="1">
+                    </div>
+                    <button class="btn-calc btn-adg" onclick="calcADG()">
+                        <span>🔢</span> Tính ADG
+                    </button>
+                    <div class="result-box result-adg" id="adg-result">
+                        <div style="font-size:0.8rem;opacity:0.7;">KẾT QUẢ ADG</div>
+                        <div class="result-value" id="adg-value">—</div>
+                        <div style="font-size:0.9rem;" id="adg-unit">g/ngày</div>
+                        <div class="result-rating" id="adg-rating"></div>
+                        <div style="font-size:0.8rem;margin-top:8px;opacity:0.8;" id="adg-explain"></div>
+                    </div>
+                </div>
+
+                <!-- BPI -->
+                <div class="calc-card calc-bpi reveal" id="bpi-card" style="transition-delay:0.3s;">
+                    <div class="card-icon" style="background:linear-gradient(135deg,#1565C0,#42A5F5);">🏆</div>
+                    <h3 style="font-size:1.4rem;color:#1565C0;margin-bottom:5px;">Chỉ số BPI</h3>
+                    <p style="font-size:0.85rem;color:#888;margin-bottom:10px;">Broiler Performance Index — Chỉ số hiệu suất gà thịt</p>
+                    <div class="formula-box">
+                        <div class="formula-text" style="font-size:1.1rem;">
+                            BPI = (<span style="color:#2E7D32;">Tỷ lệ sống</span> × <span style="color:#E65100;">P<sub>sống</sub></span>) / (<span style="color:#1565C0;">FCR</span> × <span style="color:#6A1B9A;">Ngày tuổi</span>) × 100
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>💚 Tỷ lệ sống (%)</label>
+                        <input type="number" id="bpi-livability" placeholder="VD: 95" step="0.01" min="0" max="100">
+                    </div>
+                    <div class="input-group">
+                        <label>⚖️ Khối lượng sống TB (kg)</label>
+                        <input type="number" id="bpi-weight" placeholder="VD: 2.5" step="0.01" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label>🍽️ Hệ số FCR</label>
+                        <input type="number" id="bpi-fcr" placeholder="VD: 1.65" step="0.01" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label>📅 Ngày tuổi xuất chuồng</label>
+                        <input type="number" id="bpi-age" placeholder="VD: 42" step="1" min="1">
+                    </div>
+                    <button class="btn-calc btn-bpi" onclick="calcBPI()">
+                        <span>🔢</span> Tính BPI
+                    </button>
+                    <div class="result-box result-bpi" id="bpi-result">
+                        <div style="font-size:0.8rem;opacity:0.7;">KẾT QUẢ BPI</div>
+                        <div class="result-value" id="bpi-value">—</div>
+                        <div class="result-rating" id="bpi-rating"></div>
+                        <div style="font-size:0.8rem;margin-top:8px;opacity:0.8;" id="bpi-explain"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Individual tabs -->
+        <div id="tab-fcr" class="tab-content">
+            <div class="max-w-lg mx-auto" id="fcr-single"></div>
+        </div>
+        <div id="tab-adg" class="tab-content">
+            <div class="max-w-lg mx-auto" id="adg-single"></div>
+        </div>
+        <div id="tab-bpi" class="tab-content">
+            <div class="max-w-lg mx-auto" id="bpi-single"></div>
+        </div>
+
+        <!-- Info Tab -->
+        <div id="tab-info" class="tab-content">
+            <div class="info-card reveal visible">
+                <h3 style="font-size:1.5rem;color:#E65100;margin-bottom:5px;">📚 Bảng Tra Cứu Chỉ Số Tiêu Chuẩn</h3>
+                <p style="color:#888;font-size:0.9rem;margin-bottom:20px;">Tiêu chuẩn đánh giá hiệu quả chăn nuôi gà thịt (Broiler)</p>
+
+                <!-- FCR Table -->
+                <h4 style="color:#E65100;margin-bottom:10px;">🍽️ Bảng FCR theo tuần tuổi (Gà thịt lông trắng)</h4>
+                <div style="overflow-x:auto;margin-bottom:25px;">
+                    <table class="info-table">
+                        <thead>
+                            <tr style="background:linear-gradient(135deg,#FF6F00,#FFA000);color:white;">
+                                <th>Tuần tuổi</th>
+                                <th>FCR Xuất sắc</th>
+                                <th>FCR Tốt</th>
+                                <th>FCR Trung bình</th>
+                                <th>FCR Kém</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>1 tuần</strong> (7 ngày)</td>
+                                <td><span class="badge badge-excellent">< 0.90</span></td>
+                                <td><span class="badge badge-good">0.90 - 1.00</span></td>
+                                <td><span class="badge badge-average">1.00 - 1.10</span></td>
+                                <td><span class="badge badge-poor">> 1.10</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>2 tuần</strong> (14 ngày)</td>
+                                <td><span class="badge badge-excellent">< 1.10</span></td>
+                                <td><span class="badge badge-good">1.10 - 1.20</span></td>
+                                <td><span class="badge badge-average">1.20 - 1.35</span></td>
+                                <td><span class="badge badge-poor">> 1.35</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>3 tuần</strong> (21 ngày)</td>
+                                <td><span class="badge badge-excellent">< 1.25</span></td>
+                                <td><span class="badge badge-good">1.25 - 1.35</span></td>
+                                <td><span class="badge badge-average">1.35 - 1.50</span></td>
+                                <td><span class="badge badge-poor">> 1.50</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>4 tuần</strong> (28 ngày)</td>
+                                <td><span class="badge badge-excellent">< 1.35</span></td>
+                                <td><span class="badge badge-good">1.35 - 1.50</span></td>
+                                <td><span class="badge badge-average">1.50 - 1.65</span></td>
+                                <td><span class="badge badge-poor">> 1.65</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>5 tuần</strong> (35 ngày)</td>
+                                <td><span class="badge badge-excellent">< 1.50</span></td>
+                                <td><span class="badge badge-good">1.50 - 1.65</span></td>
+                                <td><span class="badge badge-average">1.65 - 1.80</span></td>
+                                <td><span class="badge badge-poor">> 1.80</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>6 tuần</strong> (42 ngày)</td>
+                                <td><span class="badge badge-excellent">< 1.60</span></td>
+                                <td><span class="badge badge-good">1.60 - 1.75</span></td>
+                                <td><span class="badge badge-average">1.75 - 1.90</span></td>
+                                <td><span class="badge badge-poor">> 1.90</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>7 tuần</strong> (49 ngày)</td>
+                                <td><span class="badge badge-excellent">< 1.75</span></td>
+                                <td><span class="badge badge-good">1.75 - 1.90</span></td>
+                                <td><span class="badge badge-average">1.90 - 2.10</span></td>
+                                <td><span class="badge badge-poor">> 2.10</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- ADG Table -->
+                <h4 style="color:#2E7D32;margin-bottom:10px;">📈 Bảng ADG tiêu chuẩn (Gà thịt lông trắng)</h4>
+                <div style="overflow-x:auto;margin-bottom:25px;">
+                    <table class="info-table">
+                        <thead>
+                            <tr style="background:linear-gradient(135deg,#2E7D32,#43A047);color:white;">
+                                <th>Giai đoạn</th>
+                                <th>ADG Xuất sắc</th>
+                                <th>ADG Tốt</th>
+                                <th>ADG Trung bình</th>
+                                <th>ADG Kém</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Tuần 1-2</strong></td>
+                                <td><span class="badge badge-excellent">> 25 g/ngày</span></td>
+                                <td><span class="badge badge-good">20-25 g/ngày</span></td>
+                                <td><span class="badge badge-average">15-20 g/ngày</span></td>
+                                <td><span class="badge badge-poor">< 15 g/ngày</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tuần 3-4</strong></td>
+                                <td><span class="badge badge-excellent">> 65 g/ngày</span></td>
+                                <td><span class="badge badge-good">55-65 g/ngày</span></td>
+                                <td><span class="badge badge-average">45-55 g/ngày</span></td>
+                                <td><span class="badge badge-poor">< 45 g/ngày</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tuần 5-6</strong></td>
+                                <td><span class="badge badge-excellent">> 80 g/ngày</span></td>
+                                <td><span class="badge badge-good">70-80 g/ngày</span></td>
+                                <td><span class="badge badge-average">55-70 g/ngày</span></td>
+                                <td><span class="badge badge-poor">< 55 g/ngày</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>TB cả đợt (42 ngày)</strong></td>
+                                <td><span class="badge badge-excellent">> 60 g/ngày</span></td>
+                                <td><span class="badge badge-good">55-60 g/ngày</span></td>
+                                <td><span class="badge badge-average">48-55 g/ngày</span></td>
+                                <td><span class="badge badge-poor">< 48 g/ngày</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- BPI Table -->
+                <h4 style="color:#1565C0;margin-bottom:10px;">🏆 Bảng đánh giá BPI</h4>
+                <div style="overflow-x:auto;margin-bottom:25px;">
+                    <table class="info-table">
+                        <thead>
+                            <tr style="background:linear-gradient(135deg,#1565C0,#1E88E5);color:white;">
+                                <th>Mức BPI</th>
+                                <th>Đánh giá</th>
+                                <th>Ý nghĩa</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>> 400</strong></td>
+                                <td><span class="badge badge-excellent">🌟 Xuất sắc</span></td>
+                                <td>Hiệu suất chăn nuôi vượt trội, quản lý tối ưu</td>
+                            </tr>
+                            <tr>
+                                <td><strong>350 - 400</strong></td>
+                                <td><span class="badge badge-good">✅ Tốt</span></td>
+                                <td>Đàn gà phát triển tốt, FCR và tỷ lệ sống cao</td>
+                            </tr>
+                            <tr>
+                                <td><strong>300 - 350</strong></td>
+                                <td><span class="badge badge-average">⚠️ Trung bình</span></td>
+                                <td>Cần cải thiện dinh dưỡng hoặc quản lý</td>
+                            </tr>
+                            <tr>
+                                <td><strong>< 300</strong></td>
+                                <td><span class="badge badge-poor">❌ Kém</span></td>
+                                <td>Cần xem xét lại toàn bộ quy trình chăn nuôi</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Tips -->
+                <div style="background:linear-gradient(135deg,#FFF8E1,#FFECB3);border-radius:16px;padding:25px;border:2px solid #FFD54F;">
+                    <h4 style="color:#F57F17;margin-bottom:15px;">💡 Mẹo Cải Thiện Chỉ Số Chăn Nuôi</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div style="display:flex;gap:10px;align-items:flex-start;">
+                            <span style="font-size:1.5rem;">🌡️</span>
+                            <div>
+                                <strong style="color:#E65100;">Kiểm soát nhiệt độ</strong>
+                                <p style="font-size:0.85rem;color:#666;">Duy trì 32-35°C tuần đầu, giảm dần 2-3°C/tuần</p>
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:10px;align-items:flex-start;">
+                            <span style="font-size:1.5rem;">💧</span>
+                            <div>
+                                <strong style="color:#1565C0;">Nước sạch đầy đủ</strong>
+                                <p style="font-size:0.85rem;color:#666;">Tỷ lệ nước:thức ăn = 1.6-2.0:1, nhiệt độ nước < 25°C</p>
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:10px;align-items:flex-start;">
+                            <span style="font-size:1.5rem;">🌽</span>
+                            <div>
+                                <strong style="color:#2E7D32;">Dinh dưỡng cân đối</strong>
+                                <p style="font-size:0.85rem;color:#666;">Protein 21-23% giai đoạn đầu, 19-20% giai đoạn cuối</p>
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:10px;align-items:flex-start;">
+                            <span style="font-size:1.5rem;">🏥</span>
+                            <div>
+                                <strong style="color:#C62828;">Phòng bệnh chủ động</strong>
+                                <p style="font-size:0.85rem;color:#666;">Tiêm phòng đầy đủ, vệ sinh chuồng trại định kỳ</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer reveal">
+            <div style="position:relative;z-index:1;">
+                <p style="font-size:1.1rem;font-weight:700;color:#D7CCC8;">🐔 Poultry Farm Calculator</p>
+                <p style="font-size:0.85rem;margin-top:5px;">Công cụ hỗ trợ tính toán chỉ số chăn nuôi gia cầm chuyên nghiệp</p>
+                <p style="font-size:0.75rem;margin-top:10px;opacity:0.6;">© 2025 — Được phát triển bởi chuyên gia chăn nuôi & thú y 🌾</p>
+                <p style="font-size:0.75rem;margin-top:5px;opacity:0.5;">Nhấn vào gà để xem điều bất ngờ! 🥚</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== CHICKEN ANIMATION SYSTEM ====================
+        const chickenWorld = document.getElementById('chickenWorld');
+        const chickens = [];
+
+        const chickenColors = [
+            { body: '#F5F5DC', wing: '#E8DCC8', head: '#F5F5DC', tail: '#D4C5A9' }, // White
+            { body: '#CD853F', wing: '#B8742A', head: '#CD853F', tail: '#8B5E3C' }, // Brown
+            { body: '#A0522D', wing: '#8B4513', head: '#A0522D', tail: '#6B3410' }, // Dark Brown
+            { body: '#FFD700', wing: '#FFC107', head: '#FFD700', tail: '#E6AC00' }, // Golden
+            { body: '#F4A460', wing: '#D2893F', head: '#F4A460', tail: '#B87333' }, // Sandy
+            { body: '#DEB887', wing: '#C9A96E', head: '#DEB887', tail: '#A68B5B' }, // Burlywood
+            { body: '#2C2C2C', wing: '#1A1A1A', head: '#2C2C2C', tail: '#0D0D0D' }, // Black
+        ];
+
+        const chickenSounds = ['Cục cục!', 'Cúc cu!', 'Quác quác!', 'Chiếp chiếp!', 'Ò ó o!', 'Cục tác!'];
+
+        function createChickenSVG(color, direction, isRooster = false) {
+            const flip = direction === 'left' ? 'scaleX(-1)' : '';
+            const combHeight = isRooster ? 14 : 8;
+            const tailHeight = isRooster ? 25 : 15;
+            const bodyW = isRooster ? 48 : 40;
+            const bodyH = isRooster ? 36 : 30;
+
+            return `
+            <svg width="${bodyW + 30}" height="${bodyH + 35}" viewBox="-5 -20 ${bodyW + 40} ${bodyH + 55}" style="transform:${flip}">
+                <!-- Tail feathers -->
+                <ellipse cx="${isRooster ? -2 : 2}" cy="${bodyH/2 - tailHeight/2}" rx="8" ry="${tailHeight}"
+                    fill="${color.tail}" transform="rotate(-30, 2, ${bodyH/2})" />
+                ${isRooster ? `
+                <ellipse cx="-5" cy="${bodyH/2 - tailHeight/2 - 3}" rx="6" ry="${tailHeight + 5}"
+                    fill="${color.wing}" transform="rotate(-40, 0, ${bodyH/2})" />
+                <ellipse cx="-1" cy="${bodyH/2 - tailHeight/2 + 2}" rx="5" ry="${tailHeight - 2}"
+                    fill="${color.body}" transform="rotate(-25, 3, ${bodyH/2})" />
+                ` : ''}
+
+                <!-- Body -->
+                <ellipse cx="${bodyW/2 + 5}" cy="${bodyH/2 + 2}" rx="${bodyW/2}" ry="${bodyH/2}" fill="${color.body}" />
+                <ellipse cx="${bodyW/2 + 5}" cy="${bodyH/2 + 5}" rx="${bodyW/2 - 3}" ry="${bodyH/2 - 5}" fill="${color.body}" opacity="0.7" />
+
+                <!-- Wing -->
+                <ellipse class="chicken-wing-svg" cx="${bodyW/2}" cy="${bodyH/2 + 4}" rx="${bodyW/3}" ry="${bodyH/3}"
+                    fill="${color.wing}" opacity="0.8" />
+
+                <!-- Neck -->
+                <ellipse cx="${bodyW + 2}" cy="${bodyH/4 + 3}" rx="8" ry="12" fill="${color.head}" />
+
+                <!-- Head -->
+                <circle cx="${bodyW + 8}" cy="${bodyH/4 - 5}" r="10" fill="${color.head}" />
+
+                <!-- Comb -->
+                <path d="M${bodyW + 3},${bodyH/4 - 14} Q${bodyW + 5},${bodyH/4 - 14 - combHeight} ${bodyW + 8},${bodyH/4 - 14}
+                    Q${bodyW + 10},${bodyH/4 - 14 - combHeight + 2} ${bodyW + 13},${bodyH/4 - 14}
+                    ${isRooster ? `Q${bodyW + 15},${bodyH/4 - 14 - combHeight + 4} ${bodyW + 17},${bodyH/4 - 14}` : ''}"
+                    fill="#E53935" stroke="#C62828" stroke-width="0.5" />
+
+                <!-- Eye -->
+                <circle cx="${bodyW + 13}" cy="${bodyH/4 - 6}" r="3" fill="white" />
+                <circle cx="${bodyW + 14}" cy="${bodyH/4 - 6}" r="1.8" fill="#1a1a1a" />
+                <circle cx="${bodyW + 14.5}" cy="${bodyH/4 - 7}" r="0.6" fill="white" />
+
+                <!-- Beak -->
+                <polygon points="${bodyW + 18},${bodyH/4 - 3} ${bodyW + 26},${bodyH/4 - 1} ${bodyW + 18},${bodyH/4 + 1}"
+                    fill="#FF8F00" stroke="#E65100" stroke-width="0.3" />
+
+                <!-- Wattle -->
+                <ellipse cx="${bodyW + 16}" cy="${bodyH/4 + 4}" rx="3" ry="${isRooster ? 6 : 4}" fill="#E53935" />
+
+                <!-- Legs -->
+                <line x1="${bodyW/2 + 8}" y1="${bodyH + 2}" x2="${bodyW/2 + 5}" y2="${bodyH + 18}"
+                    stroke="#FF8F00" stroke-width="3" stroke-linecap="round" class="leg1" />
+                <line x1="${bodyW/2 + 15}" y1="${bodyH + 2}" x2="${bodyW/2 + 18}" y2="${bodyH + 18}"
+                    stroke="#FF8F00" stroke-width="3" stroke-linecap="round" class="leg2" />
+
+                <!-- Feet -->
+                <path d="M${bodyW/2 + 1},${bodyH + 18} L${bodyW/2 + 5},${bodyH + 18} L${bodyW/2 + 9},${bodyH + 18}"
+                    stroke="#FF8F00" stroke-width="2" fill="none" stroke-linecap="round" />
+                <path d="M${bodyW/2 + 3},${bodyH + 18} L${bodyW/2 + 3},${bodyH + 22}"
+                    stroke="#FF8F00" stroke-width="1.5" fill="none" stroke-linecap="round" />
+                <path d="M${bodyW/2 + 14},${bodyH + 18} L${bodyW/2 + 18},${bodyH + 18} L${bodyW/2 + 22},${bodyH + 18}"
+                    stroke="#FF8F00" stroke-width="2" fill="none" stroke-linecap="round" />
+                <path d="M${bodyW/2 + 18},${bodyH + 18} L${bodyW/2 + 18},${bodyH + 22}"
+                    stroke="#FF8F00" stroke-width="1.5" fill="none" stroke-linecap="round" />
+            </svg>`;
+        }
+
+        function createChickSVG(direction) {
+            const flip = direction === 'left' ? 'scaleX(-1)' : '';
+            return `
+            <svg width="30" height="30" viewBox="-2 -5 35 40" style="transform:${flip}">
+                <ellipse cx="12" cy="14" rx="10" ry="9" fill="#FFD54F" />
+                <circle cx="22" cy="6" r="7" fill="#FFD54F" />
+                <circle cx="25" cy="5" r="2" fill="white" />
+                <circle cx="25.5" cy="5" r="1.2" fill="#1a1a1a" />
+                <polygon points="28,7 34,6 28,9" fill="#FF6F00" />
+                <line x1="9" y1="23" x2="7" y2="30" stroke="#FF8F00" stroke-width="2" stroke-linecap="round" />
+                <line x1="15" y1="23" x2="17" y2="30" stroke="#FF8F00" stroke-width="2" stroke-linecap="round" />
+                <ellipse cx="8" cy="15" rx="5" ry="4" fill="#FFCA28" opacity="0.7" />
+            </svg>`;
+        }
+
+        function spawnChicken() {
+            const container = document.createElement('div');
+            container.className = 'chicken-container';
+
+            const direction = Math.random() > 0.5 ? 'right' : 'left';
+            const isChick = Math.random() > 0.7;
+            const isRooster = !isChick && Math.random() > 0.7;
+            const color = chickenColors[Math.floor(Math.random() * chickenColors.length)];
+
+            const bottomRange = window.innerHeight - 160;
+            const topRange = window.innerHeight - 220;
+            const y = topRange + Math.random() * (bottomRange - topRange);
+
+            const duration = 12 + Math.random() * 20;
+            const delay = Math.random() * -duration;
+
+            container.style.bottom = `${window.innerHeight - y}px`;
+            container.style.animation = direction === 'right'
+                ? `walkRight ${duration}s linear ${delay}s infinite`
+                : `walkLeft ${duration}s linear ${delay}s infinite`;
+
+            const chickenEl = document.createElement('div');
+            chickenEl.className = isChick ? 'chick' : 'chicken walking';
+
+            if (isChick) {
+                chickenEl.innerHTML = createChickSVG(direction);
+            } else {
+                chickenEl.innerHTML = createChickenSVG(color, direction, isRooster);
+            }
+
+            // Speech bubble
+            const bubble = document.createElement('div');
+            bubble.className = 'speech-bubble';
+            bubble.textContent = isRooster ? 'Ò ó o! 🐓' : isChick ? 'Chiếp chiếp! 🐣' : chickenSounds[Math.floor(Math.random() * chickenSounds.length)];
+            chickenEl.appendChild(bubble);
+
+            // Click to lay egg
+            chickenEl.addEventListener('click', (e) => {
+                e.stopPropagation();
+                spawnEgg(e.clientX, e.clientY);
+                createParticles(e.clientX, e.clientY);
+                showToast(isRooster ? '🐓 Gà trống gáy vang!' : isChick ? '🐣 Gà con đáng yêu!' : '🥚 Gà đẻ trứng rồi!',
+                    isRooster ? '🐓' : isChick ? '🐣' : '🥚');
+            });
+
+            container.appendChild(chickenEl);
+            chickenWorld.appendChild(container);
+            chickens.push(container);
+        }
+
+        function spawnEgg(x, y) {
+            const egg = document.createElement('div');
+            egg.className = 'egg';
+            egg.style.left = x + 'px';
+            egg.style.top = y + 'px';
+            egg.innerHTML = `<svg width="25" height="32" viewBox="0 0 25 32">
+                <ellipse cx="12.5" cy="18" rx="10" ry="13" fill="#FFF8E1" stroke="#FFCA28" stroke-width="1"/>
+                <ellipse cx="10" cy="14" rx="4" ry="6" fill="rgba(255,255,255,0.4)" />
+            </svg>`;
+            document.body.appendChild(egg);
+            setTimeout(() => egg.remove(), 2000);
+        }
+
+        function createParticles(x, y) {
+            const emojis = ['✨', '🌟', '⭐', '💛', '🌽'];
+            for (let i = 0; i < 6; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                p.style.left = x + 'px';
+                p.style.top = y + 'px';
+                const angle = (Math.PI * 2 * i) / 6;
+                const dist = 40 + Math.random() * 40;
+                p.style.setProperty('--tx', `${Math.cos(angle) * dist}px`);
+                p.style.setProperty('--ty', `${Math.sin(angle) * dist - 30}px`);
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), 1000);
+            }
+        }
+
+        // Spawn initial chickens
+        for (let i = 0; i < 8; i++) {
+            setTimeout(() => spawnChicken(), i * 500);
+        }
+
+        // Spawn new chickens periodically
+        setInterval(() => {
+            if (chickens.length < 15) spawnChicken();
+        }, 5000);
+
+        // ==================== FENCE ====================
+        const fence = document.getElementById('fence');
+        function buildFence() {
+            fence.innerHTML = '';
+            const w = window.innerWidth;
+            const numPosts = Math.ceil(w / 80);
+            for (let i = 0; i <= numPosts; i++) {
+                const post = document.createElement('div');
+                post.className = 'fence-post';
+                post.style.left = (i * 80) + 'px';
+                fence.appendChild(post);
+            }
+            const rail1 = document.createElement('div');
+            rail1.className = 'fence-rail';
+            rail1.style.top = '12px';
+            fence.appendChild(rail1);
+
+            const rail2 = document.createElement('div');
+            rail2.className = 'fence-rail';
+            rail2.style.top = '30px';
+            fence.appendChild(rail2);
+        }
+        buildFence();
+        window.addEventListener('resize', buildFence);
+
+        // ==================== FLOATING GRAINS ====================
+        const grainContainer = document.getElementById('floatingGrains');
+        const grainEmojis = ['🌾', '🌽', '🌿', '🍃', '🌻', '☘️'];
+        for (let i = 0; i < 12; i++) {
+            const grain = document.createElement('div');
+            grain.className = 'float-grain';
+            grain.textContent = grainEmojis[Math.floor(Math.random() * grainEmojis.length)];
+            grain.style.left = Math.random() * 100 + 'vw';
+            grain.style.top = Math.random() * 100 + 'vh';
+            grain.style.animationDelay = Math.random() * 4 + 's';
+            grain.style.animationDuration = (3 + Math.random() * 3) + 's';
+            grainContainer.appendChild(grain);
+        }
+
+        // ==================== TOAST ====================
+        function showToast(text, icon = '🥚') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastText').textContent = text;
+            document.getElementById('toastIcon').textContent = icon;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // ==================== TAB SWITCHING ====================
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+            if (tab === 'fcr' || tab === 'adg' || tab === 'bpi') {
+                const singleContainer = document.getElementById(tab + '-single');
+                const card = document.getElementById(tab + '-card');
+                singleContainer.innerHTML = '';
+                const clone = card.cloneNode(true);
+                clone.style.transitionDelay = '0s';
+                clone.classList.add('visible');
+                // Re-bind button events on clone
+                const btn = clone.querySelector('.btn-calc');
+                if (tab === 'fcr') btn.onclick = () => calcFCRInContainer(clone);
+                if (tab === 'adg') btn.onclick = () => calcADGInContainer(clone);
+                if (tab === 'bpi') btn.onclick = () => calcBPIInContainer(clone);
+                singleContainer.appendChild(clone);
+            }
+
+            document.getElementById('tab-' + tab).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // ==================== CALCULATORS ====================
+        function calcFCR() {
+            const feed = parseFloat(document.getElementById('fcr-feed').value);
+            const gain = parseFloat(document.getElementById('fcr-gain').value);
+            if (!feed || !gain || gain === 0) {
+                showToast('⚠️ Vui lòng nhập đầy đủ thông tin!', '⚠️');
+                return;
+            }
+            const fcr = feed / gain;
+            const resultBox = document.getElementById('fcr-result');
+            resultBox.style.display = 'block';
+            animateValue('fcr-value', fcr, 2);
+
+            let rating, ratingClass, explain;
+            if (fcr < 1.5) {
+                rating = '🌟 Xuất sắc'; ratingClass = 'badge-excellent';
+                explain = 'Hiệu quả sử dụng thức ăn rất tốt! Đàn gà phát triển vượt trội.';
+            } else if (fcr < 1.7) {
+                rating = '✅ Tốt'; ratingClass = 'badge-good';
+                explain = 'Hiệu quả chuyển đổi thức ăn ở mức tốt, tiếp tục duy trì.';
+            } else if (fcr < 2.0) {
+                rating = '⚠️ Trung bình'; ratingClass = 'badge-average';
+                explain = 'Cần xem xét chất lượng thức ăn và điều kiện chăn nuôi.';
+            } else {
+                rating = '❌ Kém'; ratingClass = 'badge-poor';
+                explain = 'FCR quá cao! Kiểm tra ngay chất lượng thức ăn, sức khỏe đàn gà.';
+            }
+            document.getElementById('fcr-rating').className = `result-rating badge ${ratingClass}`;
+            document.getElementById('fcr-rating').textContent = rating;
+            document.getElementById('fcr-explain').textContent = explain;
+            createParticles(window.innerWidth / 2, 400);
+        }
+
+        function calcADG() {
+            const start = parseFloat(document.getElementById('adg-start').value);
+            const end = parseFloat(document.getElementById('adg-end').value);
+            const days = parseFloat(document.getElementById('adg-days').value);
+            if (isNaN(start) || isNaN(end) || !days || days === 0) {
+                showToast('⚠️ Vui lòng nhập đầy đủ thông tin!', '⚠️');
+                return;
+            }
+            const adg = (end - start) / days;
+            const resultBox = document.getElementById('adg-result');
+            resultBox.style.display = 'block';
+            animateValue('adg-value', adg, 1);
+
+            let rating, ratingClass, explain;
+            if (adg > 60) {
+                rating = '🌟 Xuất sắc'; ratingClass = 'badge-excellent';
+                explain = 'Tốc độ tăng trọng vượt trội! Quản lý dinh dưỡng rất tốt.';
+            } else if (adg > 50) {
+                rating = '✅ Tốt'; ratingClass = 'badge-good';
+                explain = 'Tăng trọng tốt, đàn gà phát triển đều và khỏe mạnh.';
+            } else if (adg > 40) {
+                rating = '⚠️ Trung bình'; ratingClass = 'badge-average';
+                explain = 'Cần cải thiện chế độ dinh dưỡng hoặc điều kiện chuồng trại.';
+            } else {
+                rating = '❌ Kém'; ratingClass = 'badge-poor';
+                explain = 'Tăng trọng kém! Kiểm tra sức khỏe đàn, thức ăn, nước uống.';
+            }
+            document.getElementById('adg-rating').className = `result-rating badge ${ratingClass}`;
+            document.getElementById('adg-rating').textContent = rating;
+            document.getElementById('adg-explain').textContent = explain;
+            createParticles(window.innerWidth / 2, 400);
+        }
+
+        function calcBPI() {
+            const livability = parseFloat(document.getElementById('bpi-livability').value);
+            const weight = parseFloat(document.getElementById('bpi-weight').value);
+            const fcr = parseFloat(document.getElementById('bpi-fcr').value);
+            const age = parseFloat(document.getElementById('bpi-age').value);
+            if (!livability || !weight || !fcr || !age || fcr === 0 || age === 0) {
+                showToast('⚠️ Vui lòng nhập đầy đủ thông tin!', '⚠️');
+                return;
+            }
+            const bpi = (livability * weight) / (fcr * age) * 100;
+            const resultBox = document.getElementById('bpi-result');
+            resultBox.style.display = 'block';
+            animateValue('bpi-value', bpi, 0);
+
+            let rating, ratingClass, explain;
+            if (bpi > 400) {
+                rating = '🌟 Xuất sắc'; ratingClass = 'badge-excellent';
+                explain = 'Hiệu suất chăn nuôi vượt trội! Tiếp tục phát huy.';
+            } else if (bpi > 350) {
+                rating = '✅ Tốt'; ratingClass = 'badge-good';
+                explain = 'Chỉ số BPI tốt, đàn gà được quản lý hiệu quả.';
+            } else if (bpi > 300) {
+                rating = '⚠️ Trung bình'; ratingClass = 'badge-average';
+                explain = 'Cần tối ưu thêm FCR hoặc cải thiện tỷ lệ sống.';
+            } else {
+                rating = '❌ Kém'; ratingClass = 'badge-poor';
+                explain = 'BPI thấp! Cần đánh giá toàn diện quy trình chăn nuôi.';
+            }
+            document.getElementById('bpi-rating').className = `result-rating badge ${ratingClass}`;
+            document.getElementById('bpi-rating').textContent = rating;
+            document.getElementById('bpi-explain').textContent = explain;
+            createParticles(window.innerWidth / 2, 400);
+        }
+
+        // Cloned container calculators
+        function calcFCRInContainer(container) {
+            const feed = parseFloat(container.querySelector('#fcr-feed').value);
+            const gain = parseFloat(container.querySelector('#fcr-gain').value);
+            if (!feed || !gain || gain === 0) { showToast('⚠️ Vui lòng nhập đầy đủ!', '⚠️'); return; }
+            const fcr = feed / gain;
+            const rb = container.querySelector('.result-box');
+            rb.style.display = 'block';
+            const valEl = container.querySelector('.result-value');
+            valEl.textContent = fcr.toFixed(2);
+            let rating, rc;
+            if (fcr < 1.5) { rating = '🌟 Xuất sắc'; rc = 'badge-excellent'; }
+            else if (fcr < 1.7) { rating = '✅ Tốt'; rc = 'badge-good'; }
+            else if (fcr < 2.0) { rating = '⚠️ Trung bình'; rc = 'badge-average'; }
+            else { rating = '❌ Kém'; rc = 'badge-poor'; }
+            const ratingEl = container.querySelector('.result-rating');
+            ratingEl.className = `result-rating badge ${rc}`;
+            ratingEl.textContent = rating;
+        }
+        function calcADGInContainer(container) {
+            const s = parseFloat(container.querySelector('#adg-start').value);
+            const e = parseFloat(container.querySelector('#adg-end').value);
+            const d = parseFloat(container.querySelector('#adg-days').value);
+            if (isNaN(s) || isNaN(e) || !d) { showToast('⚠️ Vui lòng nhập đầy đủ!', '⚠️'); return; }
+            const adg = (e - s) / d;
+            const rb = container.querySelector('.result-box');
+            rb.style.display = 'block';
+            container.querySelector('.result-value').textContent = adg.toFixed(1);
+            let rating, rc;
+            if (adg > 60) { rating = '🌟 Xuất sắc'; rc = 'badge-excellent'; }
+            else if (adg > 50) { rating = '✅ Tốt'; rc = 'badge-good'; }
+            else if (adg > 40) { rating = '⚠️ Trung bình'; rc = 'badge-average'; }
+            else { rating = '❌ Kém'; rc = 'badge-poor'; }
+            const ratingEl = container.querySelector('.result-rating');
+            ratingEl.className = `result-rating badge ${rc}`;
+            ratingEl.textContent = rating;
+        }
+        function calcBPIInContainer(container) {
+            const l = parseFloat(container.querySelector('#bpi-livability').value);
+            const w = parseFloat(container.querySelector('#bpi-weight').value);
+            const f = parseFloat(container.querySelector('#bpi-fcr').value);
+            const a = parseFloat(container.querySelector('#bpi-age').value);
+            if (!l || !w || !f || !a) { showToast('⚠️ Vui lòng nhập đầy đủ!', '⚠️'); return; }
+            const bpi = (l * w) / (f * a) * 100;
+            const rb = container.querySelector('.result-box');
+            rb.style.display = 'block';
+            container.querySelector('.result-value').textContent = Math.round(bpi);
+            let rating, rc;
+            if (bpi > 400) { rating = '🌟 Xuất sắc'; rc = 'badge-excellent'; }
+            else if (bpi > 350) { rating = '✅ Tốt'; rc = 'badge-good'; }
+            else if (bpi > 300) { rating = '⚠️ Trung bình'; rc = 'badge-average'; }
+            else { rating = '❌ Kém'; rc = 'badge-poor'; }
+            const ratingEl = container.querySelector('.result-rating');
+            ratingEl.className = `result-rating badge ${rc}`;
+            ratingEl.textContent = rating;
+        }
+
+        // Animate counter
+        function animateValue(elementId, target, decimals) {
+            const el = document.getElementById(elementId);
+            const start = 0;
+            const duration = 800;
+            const startTime = performance.now();
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                const current = start + (target - start) * eased;
+                el.textContent = current.toFixed(decimals);
+                if (progress < 1) requestAnimationFrame(update);
+            }
+            requestAnimationFrame(update);
+        }
+
+        // ==================== SCROLL REVEAL ====================
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // ==================== KEYBOARD SHORTCUTS ====================
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const activeTab = document.querySelector('.tab-content.active');
+                if (activeTab.id === 'tab-all' || activeTab.id === 'tab-fcr') {
+                    if (document.activeElement.id?.startsWith('fcr')) calcFCR();
+                    if (document.activeElement.id?.startsWith('adg')) calcADG();
+                    if (document.activeElement.id?.startsWith('bpi')) calcBPI();
+                }
+            }
+        });
+
+        // Initial greeting
+        setTimeout(() => showToast('Chào mừng bạn đến trang tính chỉ số chăn nuôi! 🐔', '👋'), 1500);
+    </script>
+</body>
+</html>
